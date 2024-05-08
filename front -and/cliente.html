@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shoes Store</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <style>
+    .sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      padding: 48px 0 0;
+      box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    }
+    .sidebar-sticky {
+      position: relative;
+      top: 0;
+      height: calc(100vh - 48px);
+      padding-top: .5rem;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    .sidebar .nav-link {
+      font-weight: 500;
+      color: #333;
+      transition: opacity 0.3s ease;
+    }
+    .sidebar .nav-link:hover {
+      opacity: 0.7;
+    }
+    .content {
+      margin-left: 220px; /* Ancho del menú lateral */
+    }
+    .filter-header {
+      font-size: 24px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Menú lateral -->
+    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+      <div class="sidebar-sticky">
+        <h6 class="sidebar-heading d-flex justify-content-start align-items-center px-3 mt-4 mb-1 text-muted">
+          <i class="fab fa-adn mr-2"></i> Shoes Store
+        </h6>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">
+              <i class="fas fa-tachometer-alt"></i>
+              Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-user"></i>
+              Cliente
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-shoe-prints"></i>
+              Productos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-chart-line"></i>
+              Ventas
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Contenido de la página -->
+    <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4 content">
+      <div class="container">
+        <div class="row mt-4">
+          <div class="col-md-12">
+            <!-- Encabezado de filtros -->
+            <h2 class="filter-header">Cliente</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <!-- Filtro por nombre -->
+            <div class="form-group">
+              <label for="filtro-nombre">Filtrar por Nombre</label>
+              <input type="text" class="form-control" id="filtro-nombre">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <!-- Filtro por ciudad -->
+            <div class="form-group">
+              <label for="filtro-ciudad">Filtrar por Ciudad</label>
+              <input type="text" class="form-control" id="filtro-ciudad">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <!-- Filtro por estado -->
+            <div class="form-group">
+              <label for="filtro-estado">Filtrar por Estado</label>
+              <select class="form-control" id="filtro-estado">
+                <option value="">Seleccionar</option>
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <!-- Botones de acción -->
+            <button class="btn btn-primary mr-2" id="aplicar-filtros">Aplicar Filtros</button>
+            <button class="btn btn-secondary" id="limpiar-filtros">Limpiar Filtros</button>
+          </div>
+        </div>
+        <!-- Tabla de clientes -->
+        <div class="row mt-4">
+          <div class="col-md-12">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID cliente</th>
+                  <th>Tipo de Identificacion</th>
+                  <th>Identificacion</th>
+                  <th>Nombre</th>
+                  <th>Apellido</th>
+                  <th>Telefono</th>
+                  <th>Direccion</th>
+                  <th>Ciudad</th>
+                  <th>Estado</th>
+                  <th>Opciones</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-clientes-body">
+                <!-- Aquí se insertarán los datos de los clientes -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Bootstrap JS y jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // Datos de ejemplo (aquí debes reemplazarlos con los datos de tu base de datos)
+    var clientes = [
+      { id: 1, tipoIdentificacion: 'CC', identificacion: '123456789', nombre: 'Juan', apellido: 'Perez', telefono: '1234567890', direccion: 'Calle 123', ciudad: 'Bogotá', estado: 'Activo' },
+      { id: 2, tipoIdentificacion: 'CC', identificacion: '987654321', nombre: 'María', apellido: 'González', telefono: '0987654321', direccion: 'Carrera 456', ciudad: 'Medellín', estado: 'Inactivo' }
+    ];
+
+    // Función para construir la tabla de clientes
+    function construirTabla(clientes) {
+      var tablaHTML = '';
+      clientes.forEach(function(cliente) {
+        tablaHTML += '<tr>';
+        tablaHTML += '<td>' + cliente.id + '</td>';
+        tablaHTML += '<td>' + cliente.tipoIdentificacion + '</td>';
+        tablaHTML += '<td>' + cliente.identificacion + '</td>';
+        tablaHTML += '<td>' + cliente.nombre + '</td>';
+        tablaHTML += '<td>' + cliente.apellido + '</td>';
+        tablaHTML += '<td>' + cliente.telefono + '</td>';
+        tablaHTML += '<td>' + cliente.direccion + '</td>';
+        tablaHTML += '<td>' + cliente.ciudad + '</td>';
+        tablaHTML += '<td>' + cliente.estado + '</td>';
+        tablaHTML += '<td>';
+        tablaHTML += '<button class="btn btn-primary btn-sm" onclick="editarCliente(' + cliente.id + ')">Editar</button>';
+        tablaHTML += '<button class="btn btn-danger btn-sm" onclick="confirmarEliminar(' + cliente.id + ')">Eliminar</button>';
+        tablaHTML += '<button class="btn btn-success btn-sm" onclick="activarCliente(' + cliente.id + ')">Activar</button>';
+        tablaHTML += '<button class="btn btn-warning btn-sm" onclick="desactivarCliente(' + cliente.id + ')">Desactivar</button>';
+        tablaHTML += '</td>';
+        tablaHTML += '</tr>';
+      });
+      $('#tabla-clientes-body').html(tablaHTML);
+    }
+
+    // Mostrar todos los clientes al cargar la página
+    construirTabla(clientes);
+
+    // Función de confirmación antes de eliminar un cliente
+    window.confirmarEliminar = function(id) {
+      if (confirm("¿Estás seguro de eliminar?\nEsta acción no se puede revertir")) {
+        eliminarCliente(id);
+      }
+    };
+
+    // Función para eliminar un cliente
+    window.eliminarCliente = function(id) {
+      console.log('Eliminar cliente con ID:', id);
+      // Aquí puedes escribir la lógica para eliminar el cliente de tu backend
+    };
+
+    // Funciones de acción para los botones
+    window.editarCliente = function(id) {
+      console.log('Editar cliente con ID:', id);
+    };
+
+    window.activarCliente = function(id) {
+      console.log('Activar cliente con ID:', id);
+    };
+
+    window.desactivarCliente = function(id) {
+      console.log('Desactivar cliente con ID:', id);
+    };
+
+    // Aplicar filtros
+    $('#aplicar-filtros').click(function() {
+      var filtroNombre = $('#filtro-nombre').val().trim().toLowerCase();
+      var filtroCiudad = $('#filtro-ciudad').val().trim().toLowerCase();
+      var filtroEstado = $('#filtro-estado').val();
+
+      var clientesFiltrados = clientes.filter(function(cliente) {
+        return (cliente.nombre.toLowerCase().includes(filtroNombre) || filtroNombre === '') &&
+               (cliente.ciudad.toLowerCase().includes(filtroCiudad) || filtroCiudad === '') &&
+               (cliente.estado === filtroEstado || filtroEstado === '');
+      });
+
+      construirTabla(clientesFiltrados);
+    });
+
+    // Limpiar filtros
+    $('#limpiar-filtros').click(function() {
+      $('#filtro-nombre').val('');
+      $('#filtro-ciudad').val('');
+      $('#filtro-estado').val('');
+      construirTabla(clientes);
+    });
+  });
+</script>
+</body>
+</html>
