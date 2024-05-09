@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shoes Store</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <style>
+    .sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      padding: 48px 0 0;
+      box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    }
+    .sidebar-sticky {
+      position: relative;
+      top: 0;
+      height: calc(100vh - 48px);
+      padding-top: .5rem;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    .sidebar .nav-link {
+      font-weight: 500;
+      color: #333;
+      transition: opacity 0.3s ease;
+    }
+    .sidebar .nav-link:hover {
+      opacity: 0.7;
+    }
+    .content {
+      margin-left: 220px; /* Ancho del menú lateral */
+    }
+    .filter-header {
+      font-size: 24px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Menú lateral -->
+    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+      <div class="sidebar-sticky">
+        <h6 class="sidebar-heading d-flex justify-content-start align-items-center px-3 mt-4 mb-1 text-muted">
+          <i class="fab fa-adn mr-2"></i> Shoes Store
+        </h6>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-tachometer-alt"></i>
+              Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/cliente.html">
+              <i class="fas fa-user"></i>
+              Cliente
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="#">
+              <i class="fas fa-shoe-prints"></i>
+              Productos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-chart-line"></i>
+              Ventas
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Contenido de la página -->
+    <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4 content">
+      <div class="container">
+        <div class="row mt-4">
+          <div class="col-md-12">
+            <!-- Encabezado de filtros -->
+            <h2 class="filter-header">Productos</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <!-- Filtro por nombre -->
+            <div class="form-group">
+              <label for="filtro-nombre">Filtrar por Nombre</label>
+              <input type="text" class="form-control" id="filtro-nombre">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <!-- Filtro por estado -->
+            <div class="form-group">
+              <label for="filtro-estado">Filtrar por Estado</label>
+              <select class="form-control" id="filtro-estado">
+                <option value="">Seleccionar</option>
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <!-- Botón de filtrar -->
+            <div class="form-group">
+              <label for=""></label>
+              <button class="btn btn-primary btn-block" id="filtrar">Filtrar</button>
+            </div>
+          </div>
+        </div>
+        <!-- Tabla de productos -->
+        <div class="row mt-4">
+          <div class="col-md-12">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID Producto</th>
+                  <th>Nombre</th>
+                  <th>Precio</th>
+                  <th>Stock</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-productos-body">
+                <!-- Aquí se insertarán los datos de los productos -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Bootstrap JS y jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // Datos de ejemplo (aquí debes reemplazarlos con los datos de tu base de datos)
+    var productos = [
+      { id: 1, nombre: 'Zapatillas', precio: 50, stock: 100, estado: 'Activo' },
+      { id: 2, nombre: 'Sandalias', precio: 30, stock: 80, estado: 'Activo' },
+      { id: 3, nombre: 'Botas', precio: 80, stock: 50, estado: 'Inactivo' }
+    ];
+
+    // Función para construir la tabla de productos con filtros aplicados
+    function construirTablaConFiltros() {
+      var filtroNombre = $('#filtro-nombre').val().trim().toLowerCase();
+      var filtroEstado = $('#filtro-estado').val();
+
+      var productosFiltrados = productos.filter(function(producto) {
+        return (producto.nombre.toLowerCase().includes(filtroNombre) || filtroNombre === '') &&
+               (producto.estado === filtroEstado || filtroEstado === '');
+      });
+
+      var tablaHTML = '';
+      productosFiltrados.forEach(function(producto) {
+        tablaHTML += '<tr>';
+        tablaHTML += '<td>' + producto.id + '</td>';
+        tablaHTML += '<td>' + producto.nombre + '</td>';
+        tablaHTML += '<td>' + producto.precio + '</td>';
+        tablaHTML += '<td>' + producto.stock + '</td>';
+        tablaHTML += '<td>' + producto.estado + '</td>';
+        tablaHTML += '</tr>';
+      });
+
+      $('#tabla-productos-body').html(tablaHTML);
+    }
+
+    // Mostrar todos los productos al cargar la página
+    construirTablaConFiltros();
+
+    // Filtrar productos al hacer clic en el botón "Filtrar"
+    $('#filtrar').click(function() {
+      construirTablaConFiltros();
+    });
+  });
+</script>
+</body>
+</html>

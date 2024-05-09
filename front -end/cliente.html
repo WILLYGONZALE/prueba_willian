@@ -67,7 +67,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="/productos.html">
               <i class="fas fa-shoe-prints"></i>
               Productos
             </a>
@@ -166,10 +166,20 @@
       { id: 2, tipoIdentificacion: 'CC', identificacion: '987654321', nombre: 'María', apellido: 'González', telefono: '0987654321', direccion: 'Carrera 456', ciudad: 'Medellín', estado: 'Inactivo' }
     ];
 
-    // Función para construir la tabla de clientes
-    function construirTabla(clientes) {
+    // Función para construir la tabla de clientes con filtros aplicados
+    function construirTablaConFiltros() {
+      var filtroNombre = $('#filtro-nombre').val().trim().toLowerCase();
+      var filtroCiudad = $('#filtro-ciudad').val().trim().toLowerCase();
+      var filtroEstado = $('#filtro-estado').val();
+
+      var clientesFiltrados = clientes.filter(function(cliente) {
+        return (cliente.nombre.toLowerCase().includes(filtroNombre) || filtroNombre === '') &&
+               (cliente.ciudad.toLowerCase().includes(filtroCiudad) || filtroCiudad === '') &&
+               (cliente.estado === filtroEstado || filtroEstado === '');
+      });
+
       var tablaHTML = '';
-      clientes.forEach(function(cliente) {
+      clientesFiltrados.forEach(function(cliente) {
         tablaHTML += '<tr>';
         tablaHTML += '<td>' + cliente.id + '</td>';
         tablaHTML += '<td>' + cliente.tipoIdentificacion + '</td>';
@@ -182,57 +192,51 @@
         tablaHTML += '<td>' + cliente.estado + '</td>';
         tablaHTML += '<td>';
         tablaHTML += '<button class="btn btn-primary btn-sm" onclick="editarCliente(' + cliente.id + ')">Editar</button>';
-        tablaHTML += '<button class="btn btn-danger btn-sm" onclick="confirmarEliminar(' + cliente.id + ')">Eliminar</button>';
-        tablaHTML += '<button class="btn btn-success btn-sm" onclick="activarCliente(' + cliente.id + ')">Activar</button>';
-        tablaHTML += '<button class="btn btn-warning btn-sm" onclick="desactivarCliente(' + cliente.id + ')">Desactivar</button>';
+        if (cliente.estado === 'Activo') {
+          tablaHTML += '<button class="btn btn-danger btn-sm" onclick="desactivarCliente(' + cliente.id + ')">Desactivar</button>';
+        } else {
+          tablaHTML += '<button class="btn btn-success btn-sm" onclick="activarCliente(' + cliente.id + ')">Activar</button>';
+        }
+        tablaHTML += '<button class="btn btn-danger btn-sm ml-2" onclick="confirmarEliminar(' + cliente.id + ')">Eliminar</button>';
         tablaHTML += '</td>';
         tablaHTML += '</tr>';
       });
+
       $('#tabla-clientes-body').html(tablaHTML);
     }
 
     // Mostrar todos los clientes al cargar la página
-    construirTabla(clientes);
+    construirTablaConFiltros();
 
-    // Función de confirmación antes de eliminar un cliente
-    window.confirmarEliminar = function(id) {
-      if (confirm("¿Estás seguro de eliminar?\nEsta acción no se puede revertir")) {
-        eliminarCliente(id);
-      }
+    // Función para activar un cliente
+    window.activarCliente = function(id) {
+      console.log('Activar cliente con ID:', id);
+      // Aquí iría la lógica para activar al cliente con el ID proporcionado
     };
 
-    // Función para eliminar un cliente
-    window.eliminarCliente = function(id) {
-      console.log('Eliminar cliente con ID:', id);
-      // Aquí puedes escribir la lógica para eliminar el cliente de tu backend
+    // Función para desactivar un cliente
+    window.desactivarCliente = function(id) {
+      console.log('Desactivar cliente con ID:', id);
+      // Aquí iría la lógica para desactivar al cliente con el ID proporcionado
     };
 
-    // Funciones de acción para los botones
+    // Función para editar los datos de un cliente
     window.editarCliente = function(id) {
+      // Aquí debes implementar la lógica para mostrar los datos del cliente en un formulario de edición
       console.log('Editar cliente con ID:', id);
     };
 
-    window.activarCliente = function(id) {
-      console.log('Activar cliente con ID:', id);
-    };
-
-    window.desactivarCliente = function(id) {
-      console.log('Desactivar cliente con ID:', id);
+    // Función para confirmar la eliminación de un cliente
+    window.confirmarEliminar = function(id) {
+      if (confirm('¿Estás seguro de eliminar?\nEsta acción no se puede revertir.')) {
+        // Aquí iría la lógica para eliminar al cliente con el ID proporcionado
+        console.log('Eliminar cliente con ID:', id);
+      }
     };
 
     // Aplicar filtros
     $('#aplicar-filtros').click(function() {
-      var filtroNombre = $('#filtro-nombre').val().trim().toLowerCase();
-      var filtroCiudad = $('#filtro-ciudad').val().trim().toLowerCase();
-      var filtroEstado = $('#filtro-estado').val();
-
-      var clientesFiltrados = clientes.filter(function(cliente) {
-        return (cliente.nombre.toLowerCase().includes(filtroNombre) || filtroNombre === '') &&
-               (cliente.ciudad.toLowerCase().includes(filtroCiudad) || filtroCiudad === '') &&
-               (cliente.estado === filtroEstado || filtroEstado === '');
-      });
-
-      construirTabla(clientesFiltrados);
+      construirTablaConFiltros();
     });
 
     // Limpiar filtros
@@ -240,7 +244,7 @@
       $('#filtro-nombre').val('');
       $('#filtro-ciudad').val('');
       $('#filtro-estado').val('');
-      construirTabla(clientes);
+      construirTablaConFiltros();
     });
   });
 </script>
