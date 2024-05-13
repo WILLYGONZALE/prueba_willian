@@ -61,13 +61,13 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/cliente.html">
+            <a class="nav-link active" href="#">
               <i class="fas fa-user"></i>
               Cliente
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="#">
+            <a class="nav-link" href="#">
               <i class="fas fa-shoe-prints"></i>
               Productos
             </a>
@@ -86,36 +86,10 @@
     <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4 content">
       <div class="container">
         <div class="row mt-4">
-          <div class="col-md-12">
-            <!-- Encabezado de filtros -->
+          <div class="col-md-12 d-flex justify-content-between">
+            <!-- Encabezado de filtros y botón para agregar producto -->
             <h2 class="filter-header">Productos</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-4">
-            <!-- Filtro por nombre -->
-            <div class="form-group">
-              <label for="filtro-nombre">Filtrar por Nombre</label>
-              <input type="text" class="form-control" id="filtro-nombre">
-            </div>
-          </div>
-          <div class="col-md-4">
-            <!-- Filtro por estado -->
-            <div class="form-group">
-              <label for="filtro-estado">Filtrar por Estado</label>
-              <select class="form-control" id="filtro-estado">
-                <option value="">Seleccionar</option>
-                <option value="activo">Activo</option>
-                <option value="inactivo">Inactivo</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <!-- Botón de filtrar -->
-            <div class="form-group">
-              <label for=""></label>
-              <button class="btn btn-primary btn-block" id="filtrar">Filtrar</button>
-            </div>
+            <button class="btn btn-primary" id="agregar-producto">Agregar Producto</button>
           </div>
         </div>
         <!-- Tabla de productos -->
@@ -142,50 +116,112 @@
   </div>
 </div>
 
+<!-- Modal para agregar nuevo producto -->
+<div class="modal fade" id="modal-agregar-producto" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Crear Producto</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="form-agregar-producto">
+          <div class="form-group">
+            <label for="nombre-producto">Nombre del Producto:</label>
+            <input type="text" class="form-control" id="nombre-producto">
+          </div>
+          <div class="form-group">
+            <label for="descripcion-producto">Descripción:</label>
+            <textarea class="form-control" id="descripcion-producto"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="cantidad-producto">Cantidad:</label>
+            <input type="number" class="form-control" id="cantidad-producto">
+          </div>
+          <div class="form-group">
+            <label for="precio-producto">Precio:</label>
+            <input type="number" class="form-control" id="precio-producto">
+          </div>
+          <div class="form-group">
+            <label for="iva-producto">%IVA:</label>
+            <input type="number" class="form-control" id="iva-producto">
+          </div>
+          <div class="form-group">
+            <label for="descuento-producto">%Descuento:</label>
+            <input type="number" class="form-control" id="descuento-producto">
+          </div>
+          <div class="form-group">
+            <label for="estado-producto">Estado:</label>
+            <select class="form-control" id="estado-producto">
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" id="guardar-producto">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Bootstrap JS y jQuery -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
   $(document).ready(function() {
-    // Datos de ejemplo (aquí debes reemplazarlos con los datos de tu base de datos)
-    var productos = [
-      { id: 1, nombre: 'Zapatillas', precio: 50, stock: 100, estado: 'Activo' },
-      { id: 2, nombre: 'Sandalias', precio: 30, stock: 80, estado: 'Activo' },
-      { id: 3, nombre: 'Botas', precio: 80, stock: 50, estado: 'Inactivo' }
-    ];
-
-    // Función para construir la tabla de productos con filtros aplicados
-    function construirTablaConFiltros() {
-      var filtroNombre = $('#filtro-nombre').val().trim().toLowerCase();
-      var filtroEstado = $('#filtro-estado').val();
-
-      var productosFiltrados = productos.filter(function(producto) {
-        return (producto.nombre.toLowerCase().includes(filtroNombre) || filtroNombre === '') &&
-               (producto.estado === filtroEstado || filtroEstado === '');
-      });
-
-      var tablaHTML = '';
-      productosFiltrados.forEach(function(producto) {
-        tablaHTML += '<tr>';
-        tablaHTML += '<td>' + producto.id + '</td>';
-        tablaHTML += '<td>' + producto.nombre + '</td>';
-        tablaHTML += '<td>' + producto.precio + '</td>';
-        tablaHTML += '<td>' + producto.stock + '</td>';
-        tablaHTML += '<td>' + producto.estado + '</td>';
-        tablaHTML += '</tr>';
-      });
-
-      $('#tabla-productos-body').html(tablaHTML);
-    }
-
-    // Mostrar todos los productos al cargar la página
-    construirTablaConFiltros();
-
-    // Filtrar productos al hacer clic en el botón "Filtrar"
-    $('#filtrar').click(function() {
-      construirTablaConFiltros();
+    // Función para agregar un nuevo producto
+    $('#agregar-producto').click(function() {
+      $('#modal-agregar-producto').modal('show');
     });
+
+    // Función para guardar el producto ingresado
+    $('#guardar-producto').click(function() {
+      // Obtener los valores del formulario
+      var nombre = $('#nombre-producto').val();
+      var descripcion = $('#descripcion-producto').val();
+      var cantidad = $('#cantidad-producto').val();
+      var precio = $('#precio-producto').val();
+      var iva = $('#iva-producto').val();
+      var descuento = $('#descuento-producto').val();
+      var estado = $('#estado-producto').val();
+
+      // Aquí deberías guardar estos valores en tu base de datos
+
+      // Limpia el formulario después de guardar
+      $('#nombre-producto').val('');
+      $('#descripcion-producto').val('');
+      $('#cantidad-producto').val('');
+      $('#precio-producto').val('');
+      $('#iva-producto').val('');
+      $('#descuento-producto').val('');
+      $('#estado-producto').val('');
+
+      // Cerrar el modal después de guardar
+      $('#modal-agregar-producto').modal('hide');
+
+      // Actualizar la tabla de productos
+      actualizarTablaProductos();
+    });
+
+    // Función para actualizar la tabla de productos
+    function actualizarTablaProductos() {
+      // Aquí puedes hacer una solicitud AJAX para obtener los datos actualizados de los productos desde la base de datos
+      // Por ahora, solo agregaremos una fila de ejemplo a la tabla
+      var filaEjemplo = '<tr>' +
+                          '<td>ID Producto</td>' +
+                          '<td>Nombre del Producto</td>' +
+                          '<td>Precio</td>' +
+                          '<td>Stock</td>' +
+                          '<td>Estado</td>' +
+                        '</tr>';
+      $('#tabla-productos-body').append(filaEjemplo);
+    }
   });
 </script>
 </body>
